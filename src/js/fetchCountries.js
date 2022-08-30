@@ -10,4 +10,4 @@ export default function fetchCountries(name) {
     }
     return response.json();
   });
-}
+};
