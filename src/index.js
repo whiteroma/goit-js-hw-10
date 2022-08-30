@@ -39,7 +39,7 @@ function renderCountriesInfo(countries) {
           <h1 class="official-name">${name.official}</h1>
           <p><b>Capital:</b> ${capital}</p>
           <p><b>Population:</b> ${population}</p>
-          <p><b>Langueges:</b> ${Object.values(languages)}</p>`;
+          <p><b>Languages:</b> ${Object.values(languages)}</p>`;
     })
     .join('');
   refs.countryInfo.innerHTML = markup;
