@@ -1,8 +1,8 @@
 import './css/styles.css';
 import fetchCountries from './js/fetchCountries.js';
+import countryMarkUp from './templates/templates.js';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
-import renderMarkUp from './templates/template.js';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -25,12 +25,40 @@ function onInputField(e) {
 
   fetchCountries(countries)
     .then(renderCountriesInfo)
-    .catch(error => Notiflix.Notify.failure('Oops, there is no country with that name'));
+    .catch(error => Notiflix.Notify.failure('Oops, there is no country with that name'),
+    refs.countryList.innerHTML = '',
+    refs.countryInfo.innerHTML = '',)
 }
 
 function renderCountriesInfo(countries) {
+  if (countries.length > 10) {
+    Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
+    refs.countryList.innerHTML = '';
+    refs.countryInfo.innerHTML = '';
+  }
 
-  const markup = countries
+  if (countries.length > 1) {
+    refs.countryInfo.innerHTML = '';
+  }
+
+  renderCountriesList(countries);
+}
+
+function renderCountriesList(countries) {
+  if (countries.length >= 2 && countries.length <= 10) {
+    const markup = countries
+      .map(({ name, flags }) => {
+        return `<li>
+        <img src="${flags.svg}" alt="${name.official}" width="30px">
+        <p class="official-name"><b>${name.official}</b>
+        </li>`;
+      })
+      .join('');
+    refs.countryList.innerHTML = markup;
+  }
+
+  if (countries.length === 1) {
+    const markup = countries
     .map(({ name, capital, population, flags, languages }) => {
       return `<img src="${flags.svg}" alt="${name.official}" width="30px">
           <h1 class="official-name">${name.official}</h1>
@@ -39,13 +67,7 @@ function renderCountriesInfo(countries) {
           <p><b>Languages:</b> ${Object.values(languages)}</p>`;
     })
     .join('');
-  refs.countryInfo.innerHTML = markup;
-
-  if (countries.length > 1) {
-    refs.countryInfo.innerHTML = '';
+    refs.countryList.innerHTML = ''; 
+    refs.countryInfo.innerHTML = markup;
   }
-
-  renderMarkUp(countries);
 }
-
-
