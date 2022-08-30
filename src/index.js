@@ -1,6 +1,6 @@
 import './css/styles.css';
 import fetchCountries from '../src/js/fetchCountries.js';
-import Lodash from 'lodash.debounce';
+import Lodash from 'lodash';
 import Notiflix from 'notiflix';
 
 const DEBOUNCE_DELAY = 300;
@@ -68,3 +68,5 @@ function renderCountriesList(countries) {
     refs.countryList.innerHTML = '';
   }
 }
+
+console.log('11')
