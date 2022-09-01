@@ -2,7 +2,8 @@ import './css/styles.css';
 import fetchCountries from './js/fetchCountries.js';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
-
+import markupInfo from './templates/markupInfo.hbs';
+import markupList from './templates/markupList.hbs';
 const DEBOUNCE_DELAY = 300;
 
 const refs = {
@@ -11,9 +12,7 @@ const refs = {
   countryInfo: document.querySelector('.country-info'),
 };
 
-refs.input.addEventListener('input', debounce(onInputField, DEBOUNCE_DELAY));
-
-function onInputField(e) {
+refs.input.addEventListener('input', debounce(e => {
   const countries = e.target.value.trim();
 
   if (!countries) {
@@ -27,7 +26,7 @@ function onInputField(e) {
     .catch(error => Notiflix.Notify.failure('Oops, there is no country with that name'),
     refs.countryList.innerHTML = '',
     refs.countryInfo.innerHTML = '',)
-}
+}, DEBOUNCE_DELAY));
 
 function renderCountriesInfo(countries) {
   if (countries.length > 10) {
@@ -40,31 +39,16 @@ function renderCountriesInfo(countries) {
     refs.countryInfo.innerHTML = '';
   }
 
-  renderCountriesList(countries);
-}
-
-function renderCountriesList(countries) {
   if (countries.length >= 2 && countries.length <= 10) {
     const markup = countries
-      .map(({ name, flags }) => {
-        return `<li>
-        <img src="${flags.svg}" alt="${name.official}" width="30px">
-        <p class="official-name"><b>${name.official}</b>
-        </li>`;
-      })
-      .join('');
+    .map(markupList)
+    .join('');
     refs.countryList.innerHTML = markup;
   }
 
   if (countries.length === 1) {
     const markup = countries
-    .map(({ name, capital, population, flags, languages }) => {
-      return `<img src="${flags.svg}" alt="${name.official}" width="30px">
-          <h1 class="official-name">${name.official}</h1>
-          <p><b>Capital:</b> ${capital}</p>
-          <p><b>Population:</b> ${population}</p>
-          <p><b>Languages:</b> ${Object.values(languages)}</p>`;
-    })
+    .map(markupInfo)
     .join('');
     refs.countryList.innerHTML = ''; 
     refs.countryInfo.innerHTML = markup;
